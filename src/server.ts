@@ -29,6 +29,7 @@ io.on('connection', (socket) => {
   socket.on('requestUserList', (roomName) => {
     sendRoomUserList(roomName);
   });
+
   // Join a room
   socket.on('joinRoom', ({ room, username }) => {
     socket.join(room);
@@ -39,23 +40,13 @@ io.on('connection', (socket) => {
     sendRoomUserList(room);
   });
 
-  // Start lottery in a specific room
   socket.on('startLottery', (room) => {
-    // Get the number of clients in the room
     const roomFromAdapter = io.sockets.adapter.rooms.get(room);
     const roomSize = roomFromAdapter ? roomFromAdapter.size : 0;
-
-    console.log(
-      `Starting lottery in room: ${room}` + ` with ${roomSize} clients`,
-    );
     const numberOfPartitions = roomSize;
     const randomNumber = Math.random() * 360;
 
     const winner = Math.ceil(randomNumber / (360 / numberOfPartitions));
-
-    console.log(`Winner is: ${winner}`);
-    console.log(`Random number is: ${randomNumber}`);
-    console.log(`Room size is: ${roomSize}`);
 
     // Broadcast the winner data to all clients in the specified room
     io.to(room).emit('winnerData', { winner, randomNumber });
