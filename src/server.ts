@@ -76,7 +76,7 @@ const getLotteriesThatContainUser = async (
   username: string,
 ): Promise<Lottery[]> => {
   const lotteries = await db.all(
-    'SELECT * FROM lotteries WHERE participants LIKE ?',
+    'SELECT * FROM lotteries WHERE participants LIKE ? ORDER BY date DESC LIMIT 10',
     `%${username}%`,
   );
   return lotteries;
